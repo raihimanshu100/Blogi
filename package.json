@@ -6,6 +6,7 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
+    "vercel-build": "echo 'no build step needed'",
     "dev": "nodemon server/server.js"
   },
   "author": "",
