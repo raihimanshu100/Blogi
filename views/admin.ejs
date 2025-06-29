@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("partials/header") %>
+  <title>Admin Panel - Blogi</title>
+  <style>
+    #passwordModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #passwordModalContent {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+  </style>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('passwordModal');
+      const input = document.getElementById('adminPassword');
+      const error = document.getElementById('errorMsg');
+
+      // Hide modal if already verified this session
+      if (sessionStorage.getItem('adminVerified') === 'true') {
+        modal.style.display = 'none';
+      }
+
+      document.getElementById('submitPassword').addEventListener('click', () => {
+        const entered = input.value.trim();
+        if (entered === 'blogi@2025') {
+          sessionStorage.setItem('adminVerified', 'true');
+          modal.style.display = 'none';
+        } else {
+          error.innerText = 'Incorrect password. Redirecting...';
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1500);
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <!-- Password Modal -->
+  <div id="passwordModal">
+    <div id="passwordModalContent">
+      <h3>🔒 Admin Access</h3>
+      <p>Please enter the admin password to continue.</p>
+      <input type="password" id="adminPassword" class="form-control" placeholder="Enter password" />
+      <button id="submitPassword" class="btn btn-primary mt-3">Submit</button>
+      <p id="errorMsg" class="text-danger mt-2"></p>
+    </div>
+  </div>
+
+  <div class="container mt-5">
+    <h1 class="mb-4">Admin Dashboard</h1>
+
+    <div class="mb-5">
+      <h2 class="section-title">📊 Blog Management</h2>
+      <a href="/posts/new" class="btn btn-primary mb-3">+ Create New Post</a>
+
+      <form method="GET" action="/admin" class="mb-4 d-flex gap-2">
+        <input type="text" name="search" placeholder="Search by title or slug" class="form-control" value="<%= typeof query !== 'undefined' ? query : '' %>">
+        <button type="submit" class="btn btn-secondary">Search</button>
+      </form>
+
+      <% if (posts.length === 0) { %>
+        <p>No posts found.</p>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th><a href="/admin?sort=title">Title</a></th>
+                <th>Description</th>
+                <th><a href="/admin?sort=slug">Slug</a></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% posts.forEach(post => { %>
+                <tr>
+                  <td><%= post.title %></td>
+                  <td><%= post.description %></td>
+                  <td><%= post.slug %></td>
+                  <td>
+                    <a href="/posts/edit/<%= post._id %>" class="btn btn-sm btn-secondary">Edit</a>
+                    <form method="POST" action="/posts/<%= post._id %>?_method=DELETE" style="display:inline-block">
+                      <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <%- include("partials/footer") %>
+</body>
+</html>

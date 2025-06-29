@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/header") %>
+    <title>Create New Post</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1>Create a New Post</h1>
+
+      <form action="/posts" method="POST" onsubmit="return syncEditorContent()">
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" name="title" required value="<%= post?.title || '' %>" />
+        </div>
+
+        <div class="mb-3">
+          <label for="slug" class="form-label">Slug (optional)</label>
+          <input type="text" class="form-control" id="slug" name="slug" placeholder="e.g., my-awesome-post" value="<%= post?.slug || '' %>" />
+        </div>
+
+        <input type="hidden" name="content" id="content" />
+
+        <div class="mb-3">
+          <label for="editor" class="form-label">Content</label>
+          <div id="editor" style="height: 300px;"><%= post?.content || '' %></div>
+        </div>
+
+        <button type="submit" class="btn btn-success">Publish</button>
+        <a href="/" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+
+    <%- include("partials/footer") %>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script>
+      const quill = new Quill('#editor', { theme: 'snow' });
+      function syncEditorContent() {
+        document.getElementById('content').value = quill.root.innerHTML;
+        return true;
+      }
+    </script>
+    <script type="module" src="/js/create-post.js"></script>
+  </body>
+</html>

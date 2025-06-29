@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("partials/header") %>
+  <title>Blogi - All Blogs</title>
+</head>
+<body>
+
+  <!-- 🌟 Hero Banner -->
+  <section class="hero-banner">
+    <h1>Welcome to Blogi</h1>
+    <p>All news about Blogi in one place</p>
+    <a href="/posts/new" class="btn btn-light btn-lg mt-3">✍️ Write a Blog</a>
+  </section>
+
+  <!-- 📚 Main Content -->
+  <main class="container mt-5">
+    <h2 class="section-title">Popular Blogs</h2>
+
+    <% if (posts.length === 0) { %>
+      <p>No posts yet.</p>
+    <% } else { %>
+      <div class="row g-4">
+        <% posts.slice(0, 3).forEach((post, index) => { %>
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="/assets/img<%= index + 1 %>.png" class="card-img-top" alt="Blog image">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <a href="/posts/<%= post.slug %>"><%= post.title %></a>
+                </h5>
+                <p class="card-text text-muted">
+                  <%= new Date(post.createdAt).toLocaleDateString() %>
+                </p>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+
+  <!-- 👣 Footer -->
+  <%- include("partials/footer") %>
+</body>
+</html>
